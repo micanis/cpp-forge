@@ -1,0 +1,10 @@
+#!/usr/bin/env nu
+
+def main [] {
+    let root = $env.FORGE_ROOT
+    ls $"($root)/platforms/**/*.cpp" | each { |it| 
+        let bin = $"($it.name | path parse | get parent)/($it.name | path parse | get stem)"
+        if ($bin | path exists) { rm $bin }
+    }
+    print "[cpp-forge] 🧹 Cleaned up binary files."
+}

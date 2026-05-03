@@ -1,0 +1,45 @@
+#!/usr/bin/env nu
+
+def main [platform: string, contest: string, ...problems: string] {
+    let root = $env.FORGE_ROOT
+    let dir = $"($root)/platforms/($platform)/($contest)"
+    let template_path = ([$root, "template.cpp"] | path join)
+
+    if not ($dir | path exists) {
+        let prob_list = if ($problems | length) > 0 {
+            $problems
+        } else {
+            print $"[cpp-forge] 🛠️  Creating ($platform)/($contest)..."
+            let prompt = "Problems to create (e.g., A B C) [Default: A B C D E F]: "
+            let user_input = (input $prompt | str trim)
+
+            if ($user_input | is-empty) {
+                [A B C D E F]
+            } else {
+                $user_input | str replace -a "," " " | split row " " | where { |it| ($it | str trim | str length) > 0 }
+            }
+        }
+
+        if ($prob_list | length) == 0 {
+            print $"(ansi red)[cpp-forge] ❌ No problems specified. Aborting.(ansi reset)"
+            exit 1
+        }
+
+        mkdir $dir
+        for p in $prob_list {
+            let target_name = if ($p | str ends-with ".cpp") { $p } else { $"($p).cpp" }
+            cp $template_path $"($dir)/($target_name)"
+        }
+        print $"[cpp-forge] 📂 Initialized: ($prob_list | str join ', ')"
+    }
+
+    let layout_path = ([$root, "forge.kdl"] | path join)
+
+    cd $dir
+    try {
+        zellij action new-tab --layout $layout_path --name $contest
+        print $"[cpp-forge] 🚀 Opened tab: ($contest)"
+    } catch {
+        print $"(ansi red)[cpp-forge] ❌ Failed to open Zellij tab. Are you running inside Zellij?(ansi reset)"
+    }
+}

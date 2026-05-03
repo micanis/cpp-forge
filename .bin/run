@@ -1,0 +1,27 @@
+#!/usr/bin/env nu
+
+def main [file: string, --debug (-d)] {
+    let abs_file = ($file | path expand)
+    let parsed = ($abs_file | path parse)
+    let bin_path = $"($parsed.parent)/($parsed.stem)"
+
+    let flags = if $debug {
+        [-std=gnu++20 -Wall -Wextra -g -DDEBUG]
+    } else {
+        [-std=gnu++20 -Wall -Wextra -O2]
+    }
+
+    let mode = if $debug { "debug" } else { "release" }
+    print $"[cpp-forge] 🔨 Building ($abs_file) \(($mode))..."
+
+    let result = (do { g++ ...$flags $abs_file -o $bin_path } | complete)
+
+    if $result.exit_code == 0 {
+        print $"[cpp-forge] 🚀 Running ($bin_path)..."
+        print "----------------------------------------"
+        run-external $bin_path
+    } else {
+        print $result.stderr
+        print $"(ansi red)[cpp-forge] ❌ Build failed.(ansi reset)"
+    }
+}

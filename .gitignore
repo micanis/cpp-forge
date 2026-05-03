@@ -1,0 +1,14 @@
+.devbox/
+
+*
+!*.*
+!*/
+
+!*.cpp
+!*.hpp
+!*.json
+!*.txt
+!*.nu
+!*.kdl
+!.gitignore
+!.bin/*
