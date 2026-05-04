@@ -1,0 +1,80 @@
+#!/usr/bin/env nu
+
+# Stress test: compare main solution vs naive solution on randomly generated cases.
+#
+# Conventions:
+#   main : the solution under test (fast, possibly buggy)
+#   naive: a brute-force reference solution that is trusted
+#   gen  : a generator that prints a random test case to stdout.
+#          It must accept a seed as the first argument (argv[1]) so each run
+#          produces a different case. Example skeleton:
+#
+#             #include <bits/stdc++.h>
+#             int main(int argc, char** argv) {
+#                 srand(atoi(argv[1]));
+#                 int n = rand() % 10 + 1;
+#                 std::cout << n << "\n";
+#             }
+def main [
+    main_src: string
+    naive_src: string
+    gen_src: string
+    --count (-c): int = 100
+] {
+    let flags = [-std=gnu++20 -O2 -Wall -Wextra]
+
+    let main_bin  = (compile $main_src  $flags)
+    let naive_bin = (compile $naive_src $flags)
+    let gen_bin   = (compile $gen_src   $flags)
+
+    if ($main_bin == null) or ($naive_bin == null) or ($gen_bin == null) {
+        return
+    }
+
+    print $"[cpp-forge] 🎲 Running ($count) cases..."
+
+    mut passed = 0
+    for i in 1..$count {
+        let input = (^$gen_bin ($i | into string) | complete)
+        if $input.exit_code != 0 {
+            print $"(ansi red)[cpp-forge] ❌ Generator failed at seed ($i)(ansi reset)"
+            print $input.stderr
+            return
+        }
+
+        let out_main  = ($input.stdout | ^$main_bin  | complete)
+        let out_naive = ($input.stdout | ^$naive_bin | complete)
+
+        if $out_main.stdout != $out_naive.stdout {
+            print $"(ansi red)[cpp-forge] ❌ Mismatch on seed ($i)(ansi reset)"
+            print "----- input -----"
+            print $input.stdout
+            print "----- main -----"
+            print $out_main.stdout
+            print "----- naive -----"
+            print $out_naive.stdout
+            return
+        }
+
+        $passed += 1
+        if ($i mod 10) == 0 {
+            print $"  ($passed)/($count) ok"
+        }
+    }
+
+    print $"(ansi green)[cpp-forge] ✅ All ($count) cases passed.(ansi reset)"
+}
+
+def compile [src: string, flags: list<string>] {
+    let abs = ($src | path expand)
+    let parsed = ($abs | path parse)
+    let bin = $"($parsed.parent)/($parsed.stem)"
+    print $"[cpp-forge] 🔨 Building ($abs)..."
+    let result = (do { g++ ...$flags $abs -o $bin } | complete)
+    if $result.exit_code != 0 {
+        print $result.stderr
+        print $"(ansi red)[cpp-forge] ❌ Build failed: ($abs)(ansi reset)"
+        return null
+    }
+    $bin
+}

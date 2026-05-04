@@ -10,5 +10,10 @@
 !*.txt
 !*.nu
 !*.kdl
+!*.yml
+!*.md
 !.gitignore
+!.clang-format
 !.bin/*
+!.github/
+!.github/**
