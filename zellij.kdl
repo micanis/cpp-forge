@@ -1,0 +1,64 @@
+// Zellij config for cpp-forge.
+// Referenced via ZELLIJ_CONFIG_FILE set in .envrc.
+
+// ---------- 基本設定 ----------
+simplified_ui false
+pane_frames true
+theme "tokyo-night-dark"
+default_shell "nu"
+scrollback_lines 50000          // 競プロは長い出力が出ることがある
+copy_on_select false            // マウス選択で自動コピーしない
+copy_clipboard "system"
+auto_layout true
+session_serialization true      // セッション復元を有効化
+
+mouse_mode true
+
+// ---------- キーバインド ----------
+keybinds clear-defaults=false {
+
+    // Pane 移動: Alt+h/j/k/l (デフォルトの Alt+矢印の代替)
+    shared_except "locked" {
+        bind "Alt h" { MoveFocusOrTab "Left"; }
+        bind "Alt l" { MoveFocusOrTab "Right"; }
+        bind "Alt k" { MoveFocus "Up"; }
+        bind "Alt j" { MoveFocus "Down"; }
+
+        // Pane リサイズ: Alt+Shift+h/j/k/l
+        bind "Alt H" { Resize "Increase Left"; }
+        bind "Alt L" { Resize "Increase Right"; }
+        bind "Alt K" { Resize "Increase Up"; }
+        bind "Alt J" { Resize "Increase Down"; }
+
+        // タブ切り替え: Alt+[ / Alt+]
+        bind "Alt [" { GoToPreviousTab; }
+        bind "Alt ]" { GoToNextTab; }
+
+        // 新しいタブ: Alt+t
+        bind "Alt t" { NewTab; }
+
+        // 今のペインを最大化/解除 (コードに集中したいとき)
+        bind "Alt z" { ToggleFocusFullscreen; }
+
+        // スクロールモードへ: Alt+s
+        bind "Alt s" { SwitchToMode "Scroll"; }
+    }
+
+    scroll {
+        // スクロールモードを抜ける
+        bind "Escape" "q" { SwitchToMode "Normal"; }
+        // 高速スクロール
+        bind "d" { HalfPageScrollDown; }
+        bind "u" { HalfPageScrollUp; }
+        bind "G" { ScrollToBottom; }
+        bind "g" { ScrollToTop; }
+        // 検索 (ターミナル出力の中を grep する感覚)
+        bind "/" { SwitchToMode "EnterSearch"; SearchInput 0; }
+    }
+
+    search {
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
+        bind "Escape" { SwitchToMode "Normal"; }
+    }
+}

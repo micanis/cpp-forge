@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-def main [file: string, --debug (-d)] {
+def main [file: string, --debug (-d), --input (-i): string] {
     let abs_file = ($file | path expand)
     let parsed = ($abs_file | path parse)
     let bin_path = $"($parsed.parent)/($parsed.stem)"
@@ -16,12 +16,24 @@ def main [file: string, --debug (-d)] {
 
     let result = (do { g++ ...$flags $abs_file -o $bin_path } | complete)
 
-    if $result.exit_code == 0 {
+    if $result.exit_code != 0 {
+        print $result.stderr
+        print $"(ansi red)[cpp-forge] ❌ Build failed.(ansi reset)"
+        return
+    }
+
+    if $input != null {
+        let abs_input = ($input | path expand)
+        if not ($abs_input | path exists) {
+            print $"(ansi red)[cpp-forge] ❌ Input file not found: ($abs_input)(ansi reset)"
+            return
+        }
+        print $"[cpp-forge] 🚀 Running ($bin_path) < ($abs_input)..."
+        print "----------------------------------------"
+        open --raw $abs_input | run-external $bin_path
+    } else {
         print $"[cpp-forge] 🚀 Running ($bin_path)..."
         print "----------------------------------------"
         run-external $bin_path
-    } else {
-        print $result.stderr
-        print $"(ansi red)[cpp-forge] ❌ Build failed.(ansi reset)"
     }
 }

@@ -26,6 +26,21 @@ template <class T> bool chmin(T &a, const T &b) { return a > b ? a = b, true : f
 template <class T> bool chmax(T &a, const T &b) { return a < b ? a = b, true : false; }
 
 #ifdef DEBUG
+template <class A, class B> ostream &operator<<(ostream &os, const pair<A, B> &p) {
+  return os << "(" << p.first << ", " << p.second << ")";
+}
+template <class T, class = decltype(begin(declval<T>())),
+          class = enable_if_t<!is_same<T, string>::value>>
+ostream &operator<<(ostream &os, const T &c) {
+  os << "[";
+  bool first = true;
+  for (const auto &v : c) {
+    if (!first) os << ", ";
+    os << v;
+    first = false;
+  }
+  return os << "]";
+}
 #define dbg(x) cerr << #x << " = " << (x) << endl
 #else
 #define dbg(x)
