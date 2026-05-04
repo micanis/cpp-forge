@@ -6,7 +6,9 @@
 
 !*.cpp
 !*.hpp
+!*.go
 !*.json
+!*.sum
 !*.txt
 !*.nu
 !*.kdl
