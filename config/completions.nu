@@ -1,7 +1,7 @@
 # cpp-forge nushell completions.
 #
 # Add this to your nushell config (e.g. ~/.config/nushell/config.nu):
-#     source ($env.FORGE_ROOT | path join "completions.nu")
+#     source ($env.FORGE_ROOT | path join "config" "completions.nu")
 #
 # After sourcing, `work`, `run`, and `stress` get tab completion that knows
 # about platforms, contests, and .cpp files in the current directory.

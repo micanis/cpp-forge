@@ -22,24 +22,25 @@ devbox shell
 
 ```
 .
-├── .bin/             # ワークスペース管理コマンド (nushell)
-│   ├── work          # 問題セットの作成 + zellij タブを開く
-│   ├── run           # ビルド & 実行
-│   ├── stress        # ストレステスト
-│   ├── clean         # ビルド成果物の削除
-│   └── done          # zellij タブを閉じる
-├── .helix/           # Helix プロジェクトローカル設定 (自動適用)
-│   ├── config.toml   # エディタ設定 (行番号・自動保存・キーバインド等)
-│   └── languages.toml# clangd / clang-format 設定
-├── platforms/        # 問題ごとのソースを配置 (例: platforms/aoj/itp1_1/A.cpp)
-├── template.cpp      # 新しい問題のひな形
-├── compile_flags.txt # clangd 用 (LSPで補完が効く)
-├── .clang-format     # 整形ルール
-├── completions.nu    # nushell タブ補完 (source して使う)
-├── nu-config.nu      # nushell プロンプト・設定 (source して使う)
-├── devbox.json       # ツールチェインの宣言
-├── forge.kdl         # zellij レイアウト (work コマンドで使用)
-└── zellij.kdl        # zellij 本体設定 (.envrc で自動指定)
+├── .bin/                   # ワークスペース管理コマンド (nushell)
+│   ├── work                # 問題セットの作成 + zellij タブを開く
+│   ├── run                 # ビルド & 実行
+│   ├── stress              # ストレステスト
+│   ├── clean               # ビルド成果物の削除
+│   └── done                # zellij タブを閉じる
+├── .helix/                 # Helix プロジェクトローカル設定 (自動適用)
+│   ├── config.toml         # エディタ設定 (行番号・自動保存・キーバインド等)
+│   └── languages.toml      # clangd / clang-format 設定
+├── config/                 # ツール設定をまとめるディレクトリ
+│   ├── forge.kdl           # zellij レイアウト (work コマンドで使用)
+│   ├── zellij.kdl          # zellij 本体設定 (devbox.json で自動指定)
+│   ├── completions.nu      # nushell タブ補完 (source して使う)
+│   └── nu-config.nu        # nushell プロンプト・設定 (source して使う)
+├── platforms/              # 問題ごとのソースを配置
+├── template.cpp            # 新しい問題のひな形
+├── compile_flags.txt       # clangd 用 (LSPで補完が効く)
+├── .clang-format           # 整形ルール
+└── devbox.json             # ツールチェイン + 環境変数の宣言
 ```
 
 ## 基本的な使い方
@@ -139,8 +140,8 @@ dbg(v);   // -d ビルド時のみ "v = [1, 2, 3]" が cerr に出る
 
 ```nu
 # ~/.config/nushell/config.nu
-source ($env.FORGE_ROOT | path join "nu-config.nu")
-source ($env.FORGE_ROOT | path join "completions.nu")  # 補完も一緒に
+source ($env.FORGE_ROOT | path join "config" "nu-config.nu")
+source ($env.FORGE_ROOT | path join "config" "completions.nu")
 ```
 
 | 機能 | 内容 |
