@@ -1,9 +1,8 @@
 # cpp-forge nushell settings.
 # Source this in your nushell config:
 #
-#   source ($env.FORGE_ROOT | path join "nu-config.nu")
-#
-# (completions.nu は別途 source してください)
+#   source ($env.FORGE_ROOT | path join "config" "nu-config.nu")
+#   source ($env.FORGE_ROOT | path join "config" "completions.nu")
 
 # ---------- 履歴 ----------
 $env.config.history = {

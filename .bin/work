@@ -33,7 +33,7 @@ def main [platform: string, contest: string, ...problems: string] {
         print $"[cpp-forge] 📂 Initialized: ($prob_list | str join ', ')"
     }
 
-    let layout_path = ([$root, "forge.kdl"] | path join)
+    let layout_path = ([$root, "config", "forge.kdl"] | path join)
 
     cd $dir
     try {
