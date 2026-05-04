@@ -1,0 +1,19 @@
+[[language]]
+name = "cpp"
+language-servers = ["clangd"]
+formatter = { command = "clang-format", args = ["--style=file"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+[language-server.clangd]
+command = "clangd"
+args = [
+  "--background-index",          # 初回起動後はインデックスがキャッシュされ高速に
+  "--clang-tidy",                # 静的解析も同時に
+  "--completion-style=detailed", # 引数名まで補完候補に表示
+  "--function-arg-placeholders=false",
+  "--fallback-style=Google",     # .clang-format がない場合のフォールバック
+  "--header-insertion=never",    # 競プロでは余計な #include を挿入されたくない
+  "--pch-storage=memory",        # PCH をメモリに載せて高速化
+  "--malloc-trim=true",          # メモリ節約
+]

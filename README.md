@@ -28,12 +28,18 @@ devbox shell
 │   ├── stress        # ストレステスト
 │   ├── clean         # ビルド成果物の削除
 │   └── done          # zellij タブを閉じる
+├── .helix/           # Helix プロジェクトローカル設定 (自動適用)
+│   ├── config.toml   # エディタ設定 (行番号・自動保存・キーバインド等)
+│   └── languages.toml# clangd / clang-format 設定
 ├── platforms/        # 問題ごとのソースを配置 (例: platforms/aoj/itp1_1/A.cpp)
 ├── template.cpp      # 新しい問題のひな形
 ├── compile_flags.txt # clangd 用 (LSPで補完が効く)
 ├── .clang-format     # 整形ルール
+├── completions.nu    # nushell タブ補完 (source して使う)
+├── nu-config.nu      # nushell プロンプト・設定 (source して使う)
 ├── devbox.json       # ツールチェインの宣言
-└── forge.kdl         # zellij レイアウト
+├── forge.kdl         # zellij レイアウト (work コマンドで使用)
+└── zellij.kdl        # zellij 本体設定 (.envrc で自動指定)
 ```
 
 ## 基本的な使い方
@@ -99,23 +105,53 @@ dbg(v);   // -d ビルド時のみ "v = [1, 2, 3]" が cerr に出る
 
 `vector` / `pair` / `map` 等もそのまま `dbg()` で出せます。
 
-## エディタ統合
+## Helix 設定
 
-- **clangd**: `compile_flags.txt` を読むので追加設定不要で補完・診断が効きます
-- **整形**: `.clang-format` (Google ベース、インデント 2、列幅 100)
+`.helix/` ディレクトリにプロジェクトローカル設定があります。Helix を開くと自動で適用されます (ユーザー設定とマージ)。
 
-## シェル補完 (任意)
+| 設定 | 内容 |
+|---|---|
+| **相対行番号** | `5j` / `10k` のジャンプがしやすい |
+| **ルーラー 100** | `.clang-format` の列幅と一致 |
+| **保存時自動整形** | `clang-format --style=file` で保存するたびに整形 |
+| **inlay hints** | 変数の型・引数名を薄く表示 |
+| **自動保存** | フォーカスを外すと保存 |
+| **Ctrl+S** | ノーマル・インサートモード両方で保存 |
+| **Alt+. / Alt+,** | バッファ切り替え |
 
-`completions.nu` を nushell の config から読み込むと、`work` / `run` / `stress` で Tab 補完が効くようになります。
+## Zellij 設定
+
+`zellij.kdl` がプロジェクトローカルの Zellij 設定です。`.envrc` で `ZELLIJ_CONFIG_FILE` が自動的にこのファイルを指すため、devbox 環境に入るだけで有効になります。
+
+| キー | 動作 |
+|---|---|
+| `Alt+h/l` | ペイン左右移動 (タブをまたいでも移動) |
+| `Alt+k/j` | ペイン上下移動 |
+| `Alt+H/L/K/J` | ペインリサイズ |
+| `Alt+[` / `Alt+]` | タブ切り替え |
+| `Alt+t` | 新規タブ |
+| `Alt+z` | 現在のペインを全画面表示/解除 |
+| `Alt+s` | スクロールモード (`d`/`u` で半ページ、`/` で検索) |
+
+## Nushell 設定
+
+`nu-config.nu` を config から読み込むと、プロンプトと操作性が強化されます。
 
 ```nu
 # ~/.config/nushell/config.nu
-source ($env.FORGE_ROOT | path join "completions.nu")
+source ($env.FORGE_ROOT | path join "nu-config.nu")
+source ($env.FORGE_ROOT | path join "completions.nu")  # 補完も一緒に
 ```
 
-- `work <Tab>` → `platforms/` 直下のディレクトリ (atcoder, aoj, ...)
-- `work atcoder <Tab>` → そのプラットフォーム配下のコンテスト一覧
-- `run <Tab>` / `stress <Tab>` → カレントディレクトリの `*.cpp`
+| 機能 | 内容 |
+|---|---|
+| **プロンプト** | `[platform/contest]` のコンテキスト + git ブランチを表示 |
+| **vi モード** | コマンドライン編集を vi キーバインドに (helix と統一) |
+| **fuzzy 補完** | タイポしても候補が出る |
+| **SQLite 履歴** | 全セッションで履歴を共有、10万件保持 |
+| `fmt` | `clang-format --style=file -i` のエイリアス |
+| `ls-problems` | 今のディレクトリの `.cpp` ファイルを整形表示 |
+| `dbgrun` | `gdb --args` のエイリアス |
 
 ## ライセンス
 

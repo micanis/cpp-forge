@@ -1,0 +1,51 @@
+[editor]
+line-number = "relative"     # hjkl での相対ジャンプを使いやすく
+rulers = [100]               # .clang-format の ColumnLimit に合わせる
+bufferline = "multiple"      # 複数ファイル開いているときだけタブ表示
+color-modes = true           # モードごとにステータスバーの色が変わる
+idle-timeout = 150           # LSP 補完が素早く出る (ms)
+completion-trigger-len = 1   # 1 文字入力から補完候補を表示
+auto-save = true             # フォーカスを外したとき自動保存
+end-of-line-diagnostics = "hint"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.lsp]
+display-inlay-hints = true   # 引数名・型を薄く表示
+
+[editor.indent-guides]
+render = true
+character = "╎"
+skip-levels = 1
+
+[editor.statusline]
+left  = ["mode", "spinner", "file-name", "file-modification-indicator"]
+right = ["diagnostics", "position", "file-type", "file-encoding"]
+
+[editor.whitespace.render]
+space   = "none"
+tab     = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+tab = "→"
+
+# ---------- キーバインド ----------
+
+[keys.normal]
+"C-s" = ":w"                            # Ctrl+S で保存 (慣れているキー)
+"A-." = "goto_next_buffer"              # Alt+. で次のバッファ
+"A-," = "goto_previous_buffer"          # Alt+, で前のバッファ
+"C-/" = "toggle_comments"              # Ctrl+/ でコメントトグル
+
+# g に一括移動系をまとめる
+[keys.normal.g]
+"e" = "goto_last_line"                  # ge でファイル末尾
+"h" = "goto_line_start"
+"l" = "goto_line_end"
+
+[keys.insert]
+"C-s" = ["normal_mode", ":w"]          # Insert モードでも Ctrl+S で保存
