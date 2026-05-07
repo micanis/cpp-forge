@@ -24,7 +24,10 @@ def "nu-complete forge-contests" [context: string] {
 }
 
 def "nu-complete forge-cpp" [] {
-    glob *.cpp | each { |it| $it | path basename }
+    # Match cpp files in cwd as well as one level deep (A/main.cpp).
+    let here = (glob *.cpp | each { |it| $it | path basename })
+    let nested = (glob */*.cpp | each { |it| $it | path relative-to (pwd) })
+    $here | append $nested
 }
 
 # Wrapper for `work` with platform/contest completion.

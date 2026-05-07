@@ -27,8 +27,12 @@ def main [platform: string, contest: string, ...problems: string] {
 
         mkdir $dir
         for p in $prob_list {
-            let target_name = if ($p | str ends-with ".cpp") { $p } else { $"($p).cpp" }
-            cp $template_path $"($dir)/($target_name)"
+            # Strip trailing .cpp if the user typed it (legacy form).
+            let prob_name = ($p | str replace -r '\.cpp$' '')
+            let prob_dir = $"($dir)/($prob_name)"
+            mkdir $prob_dir
+            cp $template_path $"($prob_dir)/main.cpp"
+            touch $"($prob_dir)/problem.md"
         }
         print $"[cpp-forge] 📂 Initialized: ($prob_list | str join ', ')"
     }
