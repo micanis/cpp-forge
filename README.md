@@ -36,7 +36,11 @@ devbox shell
 │   ├── zellij.kdl          # zellij 本体設定 (devbox.json で自動指定)
 │   ├── completions.nu      # nushell タブ補完 (source して使う)
 │   └── nu-config.nu        # nushell プロンプト・設定 (source して使う)
-├── platforms/              # 問題ごとのソースを配置
+├── platforms/              # 問題ごとのフォルダを配置
+│   └── <platform>/<contest>/<problem>/
+│       ├── main.cpp        # 解答コード
+│       ├── problem.md      # 問題文メモ
+│       └── input*.txt      # サンプル入力 (任意)
 ├── template.cpp            # 新しい問題のひな形
 ├── compile_flags.txt       # clangd 用 (LSPで補完が効く)
 ├── .clang-format           # 整形ルール
@@ -58,22 +62,33 @@ work atcoder abc300 A B C
 work atcoder abc300
 ```
 
-`platforms/<platform>/<contest>/` 以下に `template.cpp` がコピーされ、zellij で Editor / Terminal / Input の3ペイン構成のタブが開きます。
+`platforms/<platform>/<contest>/<problem>/` が問題ごとに作られ、それぞれに以下が入ります:
+
+- `main.cpp`  — `template.cpp` のコピー
+- `problem.md` — 空の問題文メモ (適宜書き足し)
+
+zellij で Editor / Terminal / Input の3ペイン構成のタブが開きます。
 
 ### 2. ビルドして実行
 
+問題ディレクトリ (例: `A/`) に `cd` してから実行するのが基本の流れです。
+
 ```sh
+cd A
+
 # リリースビルド (-O2)
-run A.cpp
+run main.cpp
 
 # デバッグビルド (-g -DDEBUG, dbg() マクロが有効)
-run A.cpp --debug
-run A.cpp -d
+run main.cpp --debug
+run main.cpp -d
 
-# 入力ファイルから実行
-run A.cpp --input sample.txt
-run A.cpp -i sample.txt
+# 入力ファイル (input1.txt など) を stdin に流す
+run main.cpp --input input1.txt
+run main.cpp -i input1.txt
 ```
+
+コンテストディレクトリにいる場合は `run A/main.cpp` のように相対パスでも OK です。
 
 ### 3. ストレステスト (WAデバッグ用)
 
