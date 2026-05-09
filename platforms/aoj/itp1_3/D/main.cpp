@@ -62,7 +62,17 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  //
+  int a, b, c, count=0;
+  cin >> a >> b >> c;
 
+  for (int i=1; i*i <= c; i++) {
+    if (c%i == 0) {
+      if (a <= i && i <= b) count++;
+      int j = c/i;
+      if (i != j && a <= j && j <= b) count++;
+    }
+  }
+
+  cout << count << "\n";
   return 0;
 }

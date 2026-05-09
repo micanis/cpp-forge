@@ -62,7 +62,7 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  //
+  rep(i, 1000) cout << "Hello World" << "\n";
 
   return 0;
 }

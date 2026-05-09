@@ -62,7 +62,15 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  //
+  int x;
+
+  rep(i, 10000) {
+    cin >> x;
+    if (x == 0) {
+      break;
+    }
+    cout << "Case " << i+1 << ": " << x << "\n";
+  }
 
   return 0;
 }

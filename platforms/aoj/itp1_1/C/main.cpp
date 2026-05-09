@@ -50,7 +50,14 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(NULL);
 
+  int width, height;
 
+  cin >> width >> height;
+
+  int area = width * height;
+  int perimeter = width * 2 + height * 2;
+
+  cout << area << " " << perimeter << "\n";
 
   return 0;
 }

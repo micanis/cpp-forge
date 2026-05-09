@@ -62,7 +62,10 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  //
-
+  int x, y;
+  while (cin >> x >> y && (x || y)) {
+    if (x > y) swap(x,y);
+    cout << x << " " << y << "\n";
+  }
   return 0;
 }
